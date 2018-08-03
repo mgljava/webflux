@@ -3,6 +3,7 @@ package com.github.mgl.webflux.controller;
 import com.github.mgl.webflux.bean.User;
 import com.github.mgl.webflux.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +35,9 @@ public class UserController {
     return this.userService.findByUsername(username);
   }
 
-  @GetMapping("")
+  @GetMapping(value = "", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
   public Flux<User> findAll() {
+    // return this.userService.findAll().delayElements(Duration.ofSeconds(2));
     return this.userService.findAll();
   }
 }
