@@ -28,6 +28,6 @@ public class MyEventController {
   @GetMapping(path = "", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
   public Flux<MyEvent> getEvents() {  // 2
     // TODO
-    return null;
+    return this.myEventRepository.findBy();
   }
 }

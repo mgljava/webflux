@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 public class WebClientTest {
 
-  private static final String URL = "http://localhost:8080";
+  private static final String URL = "http://localhost:8088";
 
   /**
    * 获取字符串

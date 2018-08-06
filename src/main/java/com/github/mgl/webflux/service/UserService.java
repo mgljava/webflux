@@ -37,6 +37,6 @@ public class UserService {
   }
 
   public Flux<User> findAll() {
-    return userRepository.findAll();
+    return userRepository.findAll().log();
   }
 }
