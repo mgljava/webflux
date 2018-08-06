@@ -1,10 +1,13 @@
 package com.github.mgl.webflux.webclient;
 
+import com.github.mgl.webflux.bean.MyEvent;
 import com.github.mgl.webflux.bean.User;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class WebClientTest {
@@ -13,7 +16,6 @@ public class WebClientTest {
 
   /**
    * 获取字符串
-   * @throws Exception
    */
   @Test
   public void webClientTest1() throws Exception {
@@ -30,7 +32,6 @@ public class WebClientTest {
 
   /**
    * 获取所有user
-   * @throws Exception
    */
   @Test
   public void webClientTest2() throws Exception {
@@ -47,10 +48,30 @@ public class WebClientTest {
 
   /**
    * 服务端推送
-   * @throws Exception
    */
   @Test
   public void webClientTest3() throws Exception {
+    WebClient webClient = WebClient.create(URL);
+    webClient.get().uri("/times")
+        .accept(MediaType.TEXT_EVENT_STREAM)
+        .retrieve()
+        .bodyToFlux(String.class)
+        .log()
+        .take(10L)
+        .blockFirst();
+  }
 
+  @Test
+  public void webClientTest4() throws Exception {
+    Flux<MyEvent> eventFlux = Flux.interval(Duration.ofSeconds(1))
+        .map(l -> new MyEvent(System.currentTimeMillis(), "message-" + l))
+        .take(5);
+    WebClient webClient = WebClient.create(URL);
+    webClient.post().uri("/events")
+        .contentType(MediaType.APPLICATION_STREAM_JSON)
+        .body(eventFlux, MyEvent.class)
+        .retrieve()
+        .bodyToMono(Void.class)
+        .block();
   }
 }
